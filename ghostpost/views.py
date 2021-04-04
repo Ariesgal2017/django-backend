@@ -12,15 +12,29 @@ class RBModelViewSet(viewsets.ModelViewSet):
     serializer_class = RBSerializer
     @action(detail=False)
     def boasts(self, request, pk=None):
-        boasts_bydatetime = RBModel.objects.filter(is_boast=True).order_by('-post_datetime')
+        boasts_bydatetime = RBModel.objects.filter(is_boast=True).order_by('-post_time')
         serializer = self.get_serializer(boasts_bydatetime, many=True)
         return Response(serializer.data)
 
     @action(detail=False)
     def roasts(self, request, pk=None):
-        roasts_bydatetime = RBModel.objects.filter(is_boast=False).order_by('-post_datetime')
+        roasts_bydatetime = RBModel.objects.filter(is_boast=False).order_by('-post_time')
         serializer = self.get_serializer(roasts_bydatetime, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods='get')
+    def byupvotes(self, request, pk=None):
+        boastsroasts_byupvotes = RBModel.objects.all().order_by('-upvotes')
+        serializer = self.get_serializer(boastsroasts_byupvotes, many=True)
+        return Response(serializer.data)
+
+
+    @action(detail=False, methods='get')
+    def bydownvotes(self, request, pk=None):
+        boastsroasts_bydownvotes = RBModel.objects.all().order_by('downvotes')
+        serializer = self.get_serializer(boastsroasts_bydownvotes)
+        return Response(serializer.data)
+
 
     @action(detail=True, methods=['post'])
     def upvote(self, request, pk=None):
@@ -35,3 +49,5 @@ class RBModelViewSet(viewsets.ModelViewSet):
         boast_or_roast.downvotes -= 1
         boast_or_roast.save()
         return Response('Downvoted Successfully')
+
+    

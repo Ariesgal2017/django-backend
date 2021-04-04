@@ -13,4 +13,5 @@ class RBSerializer(serializers.HyperlinkedModelSerializer):
             'upvotes',
             'downvotes',
             'post_time',
+            'vote_score',
         ]
